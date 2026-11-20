@@ -9,3 +9,4 @@ build/
 venv/
 *.CircuitProject
 *.png
+!docs/images/*.png

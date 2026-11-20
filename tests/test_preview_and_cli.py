@@ -42,12 +42,40 @@ def test_cli_list_verify_truth_table(tmp_path, capsys):
 
 def test_preview_render_and_cli(tmp_path):
     pytest.importorskip("PIL")
+    from PIL import Image
+
     proj, path = _make_sample_project(tmp_path)
+    circuit = proj.get_circuit("XorDemo")
 
     png1 = tmp_path / "direct.png"
-    render_circuit_png(proj.get_circuit("XorDemo"), png1)
+    render_circuit_png(circuit, png1, title="Custom Title Demo", scale=18)
     assert png1.exists() and png1.stat().st_size > 100
+    with Image.open(png1) as im1:
+        w1, h1 = im1.size
+        assert w1 >= 420 and h1 > 100
+
+    png_minimal = tmp_path / "minimal.png"
+    render_circuit_png(circuit, png_minimal, show_header=False, show_legend=False, scale=12)
+    assert png_minimal.exists()
+    with Image.open(png_minimal) as im2:
+        assert im2.size[1] < h1
 
     png2 = tmp_path / "cli.png"
     assert cli_main(["render", str(path), "--circuit", "XorDemo", "-o", str(png2)]) == 0
     assert png2.exists() and png2.stat().st_size > 100
+
+
+def test_preview_junction_detection():
+    from pylogiccircuit.preview import _find_junction_points
+    from pylogiccircuit.project import WireDef
+
+    # T-junction at (5, 5): horizontal (0,5)-(10,5) touched by vertical (5,5)-(5,10)
+    wires = [
+        WireDef("w1", "c", 0, 5, 10, 5),
+        WireDef("w2", "c", 5, 5, 5, 10),
+        # Non-connecting perpendicular crossing at (8, 5)
+        WireDef("w3", "c", 8, 0, 8, 10),
+    ]
+    junctions = _find_junction_points(wires)
+    assert (5, 5) in junctions
+    assert (8, 5) not in junctions
