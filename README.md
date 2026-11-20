@@ -3,17 +3,17 @@
 [![CI](https://github.com/Kameil/pylogiccircuit/actions/workflows/ci.yml/badge.svg)](https://github.com/Kameil/pylogiccircuit/actions/workflows/ci.yml)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)
 ![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)
-![Dependencies: Zero](https://img.shields.io/badge/core%20dependencies-zero-brightgreen.svg)
+![Core Dependencies: Zero](https://img.shields.io/badge/core%20dependencies-zero-brightgreen.svg)
 
-**Construa, roteie automaticamente, verifique, simule e renderize circuitos digitais do [LogicCircuit](https://www.logiccircuit.org/) (`.CircuitProject`) programaticamente em Python.**
+**Programmatically build, auto-route, verify, simulate, and render [LogicCircuit](https://www.logiccircuit.org/) (`.CircuitProject`) digital circuits in Python.**
 
-- **Zero dependências obrigatórias** no núcleo (100% biblioteca padrão do Python 3.10+).
-- **Prévia visual em PNG** opcional via `Pillow` (`pip install "pylogiccircuit[preview]"`).
-- **Compatível 1:1 com o formato XML XSD `2.0.0.14`** e com o motor de avaliação FIFO do LogicCircuit.
+- **Zero required core dependencies** (100% Python 3.10+ standard library).
+- **Optional PNG schematic previews** powered by `Pillow` (`pip install "pylogiccircuit[preview]"`).
+- **1:1 compatible with LogicCircuit's XML XSD `2.0.0.14`** and its FIFO evaluation engine.
 
 ---
 
-## Prévia Gerada pela Própria Biblioteca (`pylogiccircuit.preview`)
+## Previews Rendered by `pylogiccircuit.preview`
 
 <table>
   <tr>
@@ -23,51 +23,51 @@
     </td>
     <td align="center">
       <img src="docs/images/sr_latch.png" alt="SR Latch NAND" width="380" /><br/>
-      <sub><b>Latch SR Sequencial (NAND2)</b> — sem oscilação</sub>
+      <sub><b>Sequential SR Latch (NAND2)</b> — oscillation-free</sub>
     </td>
   </tr>
 </table>
 
 <p align="center">
-  <img src="docs/images/alu_74ls382.png" alt="ALU 4-bit 74LS382 / 74HC382" width="760" /><br/>
-  <sub><b>ALU 4-bit 74LS382 / 74HC382</b> gerada, roteada automaticamente e verificada em <b>4096/4096</b> combinações — <a href="examples/alu_4bit_74ls382.py">examples/alu_4bit_74ls382.py</a></sub>
+  <img src="docs/images/alu_74ls382.png" alt="4-bit ALU 74LS382 / 74HC382" width="760" /><br/>
+  <sub><b>4-bit ALU 74LS382 / 74HC382</b> built, auto-routed, and exhaustively verified across all <b>4096/4096</b> combinations — <a href="examples/alu_4bit_74ls382.py">examples/alu_4bit_74ls382.py</a></sub>
 </p>
 
 ---
 
-## Documentação Completa
+## Documentation
 
-| Documento | Conteúdo |
+| Document | Contents |
 | --- | --- |
-| [**Estado Atual do Projeto (`v0.1.0`)**](docs/PROJECT_STATUS.md) | Inventário de módulos, métricas reais, matriz de compatibilidade com o LogicCircuit, limitações conhecidas e roadmap |
-| [**Arquitetura Técnica**](docs/ARCHITECTURE.md) | Pipeline completo, codificação de GUIDs, geometria de subcircuitos, roteador ortogonal A\*, verificador de curtos e simulador FIFO |
-| [**Referência da API**](docs/API_REFERENCE.md) | Documentação detalhada de todas as classes, métodos, parâmetros e receitas práticas |
-| [**Guia Prático, Galeria Visual & CLI**](docs/GUIDE_AND_EXAMPLES.md) | Exemplos comentados com todas as 6 imagens do `preview` (`HalfAdder`, `FullAdder`, `Adder4Bit`, `BitMux`, `ALU_74LS382`, `SRLatch`) e guia completo da CLI |
+| [**Project Status (`v0.1.0`)**](docs/PROJECT_STATUS.md) | Module inventory, exact metrics, LogicCircuit compatibility matrix, known limitations, and roadmap |
+| [**Technical Architecture**](docs/ARCHITECTURE.md) | End-to-end pipeline, built-in gate GUID encoding, subcircuit geometry, orthogonal A\* router, connectivity verifier, and FIFO simulator |
+| [**API Reference**](docs/API_REFERENCE.md) | Complete documentation of every public class, method, parameter, return type, and practical recipes |
+| [**Guide, Visual Gallery & CLI**](docs/GUIDE_AND_EXAMPLES.md) | Walkthroughs with all 6 generated `preview` PNGs (`HalfAdder`, `FullAdder`, `Adder4Bit`, `BitMux`, `ALU_74LS382`, `SRLatch`) and CLI usage |
 
 ---
 
-## Recursos Principais
+## Key Features
 
-- **Builder Python Fluente**: crie `Project` e `Circuit` com entradas, saídas, portas nativas (`NOT`, `AND`, `NAND`, `OR`, `NOR`, `XOR`, `XNOR`, `CLOCK`, `LED`) e subcircuitos hierárquicos reutilizáveis.
-- **Roteador Ortogonal A\***: traça fios na grade respeitando as regras reais do LogicCircuit (cruzamentos perpendiculares sem curto, *stubs* protegidos, *escape guards*, junções em T e *rip-up-and-reroute*).
-- **Verificador Exato de Conectividade**: detecta curtos-circuitos, redes desconexas, pinos tocados acidentalmente e fios diagonais antes mesmo de abrir o LogicCircuit.
-- **Simulador FIFO Compatível com o LogicCircuit**: achata hierarquias de subcircuitos, respeita pinos invertidos, gera tabelas-verdade completas e detecta oscilações reais.
-- **Leitura e Edição de `.CircuitProject` Existentes**: carregue projetos feitos na interface do LogicCircuit com `Project.load()`, audite, simule ou gere prévias PNG.
-- **Renderizador de Prévia PNG & CLI**: gere imagens limpas dos esquemáticos e use `pylogiccircuit list | verify | truth-table | render` direto no terminal.
+- **Fluent Python Circuit Builder**: Create `Project` and `Circuit` sheets with inputs, outputs, built-in LogicCircuit gates (`NOT`, `AND`, `NAND`, `OR`, `NOR`, `XOR`, `XNOR`, `CLOCK`, `LED`), and reusable hierarchical subcircuits.
+- **Orthogonal A\* Auto-Router**: Routes nets on LogicCircuit's grid while respecting exact crossing and T-junction semantics (non-connecting perpendicular crossings, protected pin stubs, escape guards, and rip-up-and-reroute).
+- **Exact Connectivity Verifier**: Detects unintended short circuits, disconnected nets, accidentally touched pins, and diagonal wires before you even open LogicCircuit.
+- **LogicCircuit-Compatible FIFO Simulator**: Flattens nested subcircuits, handles inverted pins, runs full truth-table sweeps, and detects real oscillations.
+- **Load & Inspect Existing `.CircuitProject` Files**: Parse projects authored in LogicCircuit's GUI with `Project.load()`, verify connectivity, run truth tables, or render PNG previews.
+- **PNG Preview Renderer & CLI**: Render publication-grade PNG schematics and run `pylogiccircuit list | verify | truth-table | render` from the terminal.
 
 ---
 
-## Instalação
+## Installation
 
 ```bash
-# Núcleo (zero dependências externas)
+# Core library (zero external dependencies)
 pip install git+https://github.com/Kameil/pylogiccircuit.git
 
-# Com suporte a prévia em PNG (Pillow)
+# With optional PNG schematic preview support (Pillow)
 pip install "pylogiccircuit[preview] @ git+https://github.com/Kameil/pylogiccircuit.git"
 ```
 
-Para desenvolvimento local:
+For local development:
 
 ```bash
 git clone https://github.com/Kameil/pylogiccircuit.git
@@ -110,17 +110,17 @@ print(sim.truth_table("HalfAdder").format_markdown())
 
 ---
 
-## Uso pela CLI
+## CLI Usage
 
 ```bash
-pylogiccircuit list meu_projeto.CircuitProject
-pylogiccircuit verify meu_projeto.CircuitProject
-pylogiccircuit truth-table meu_projeto.CircuitProject --circuit HalfAdder
-pylogiccircuit render meu_projeto.CircuitProject --circuit HalfAdder -o preview.png --scale 18
+pylogiccircuit list my_project.CircuitProject
+pylogiccircuit verify my_project.CircuitProject
+pylogiccircuit truth-table my_project.CircuitProject --circuit HalfAdder
+pylogiccircuit render my_project.CircuitProject --circuit HalfAdder -o preview.png --scale 18
 ```
 
 ---
 
-## Licença
+## License
 
-MIT License — consulte [LICENSE](LICENSE).
+MIT License — see [LICENSE](LICENSE).

@@ -1,6 +1,6 @@
-# Guia Prático, Galeria Visual (`preview`) e CLI
+# Practical Guide, Visual Gallery (`preview`) & CLI
 
-Todas as imagens abaixo foram **geradas diretamente pelo módulo [`pylogiccircuit.preview`](../src/pylogiccircuit/preview.py)** (`render_circuit_png`) executando os circuitos reais do repositório. Você pode regenerar todas elas a qualquer momento com:
+All schematic images below were **generated directly by [`pylogiccircuit.preview`](../src/pylogiccircuit/preview.py)** (`render_circuit_png`) from the runnable examples in this repository. You can regenerate every image at any time with:
 
 ```bash
 python scripts/generate_docs_images.py
@@ -8,9 +8,9 @@ python scripts/generate_docs_images.py
 
 ---
 
-## 1. Exemplo Básico: Half Adder (Meio Somador 1-bit)
+## 1. Basic Example: 1-bit Half Adder
 
-Código completo em [`examples/half_adder.py`](../examples/half_adder.py):
+Full source in [`examples/half_adder.py`](../examples/half_adder.py):
 
 ```python
 from pylogiccircuit import Gate, Project, Simulator, render_circuit_png
@@ -37,11 +37,11 @@ proj.save("half_adder.CircuitProject")
 render_circuit_png(ha, "docs/images/half_adder.png", scale=20)
 ```
 
-### Prévia gerada pelo `preview`
+### Rendered Preview
 
 ![Half Adder (1-bit)](images/half_adder.png)
 
-### Tabela-Verdade validada pelo `Simulator`
+### Verified Truth Table (`Simulator`)
 
 | A | B | S | C |
 | :-: | :-: | :-: | :-: |
@@ -50,85 +50,85 @@ render_circuit_png(ha, "docs/images/half_adder.png", scale=20)
 | 1 | 0 | 1 | 0 |
 | 1 | 1 | 0 | 1 |
 
-Note no esquemático acima:
-- Os pontos azuis preenchidos indicam **junções elétricas em T** (`A` e `B` se bifurcando para `XOR` e `AND`).
-- O cruzamento entre o fio vertical de `A` e o fio horizontal de `B` **não tem ponto** — exatamente como o LogicCircuit representa cruzamentos sem curto.
+Notice in the preview above:
+- Filled blue dots mark **electrical T-junctions** where `A` and `B` branch into both `XOR` and `AND`.
+- Where the vertical wire from `A` crosses the horizontal wire from `B`, there is **no dot** — matching LogicCircuit's non-connecting perpendicular crossing rule.
 
 ---
 
-## 2. Subcircuitos Hierárquicos: Full Adder 1-bit → Somador 4-bit
+## 2. Hierarchical Subcircuits: 1-bit Full Adder → 4-bit Ripple-Carry Adder
 
-Código completo em [`examples/full_adder_4bit.py`](../examples/full_adder_4bit.py).
+Full source in [`examples/full_adder_4bit.py`](../examples/full_adder_4bit.py).
 
-Primeiro criamos o subcircuito reutilizável `FullAdder` (`FA`) com 2 portas `XOR2`, 2 `AND2` e 1 `OR2`:
+First, we define a reusable `FullAdder` (`FA`) subcircuit with 2 `XOR2`, 2 `AND2`, and 1 `OR2` gates:
 
 ![Full Adder 1-bit](images/full_adder_1bit.png)
 
-Depois instanciamos `FullAdder` **4 vezes** dentro de `Adder4Bit` com `top.add_subcircuit(fa, ...)` encadeando o *carry* (`FA0.Cout → FA1.Cin → FA2.Cin → FA3.Cin → Cout`):
+Next, we instantiate `FullAdder` **4 times** inside `Adder4Bit` via `top.add_subcircuit(fa, ...)` and ripple the carry across stages (`FA0.Cout → FA1.Cin → FA2.Cin → FA3.Cin → Cout`):
 
 ![4-bit Ripple-Carry Adder](images/adder_4bit.png)
 
-- Verificação exaustiva executada pelo exemplo: **`512 / 512`** combinações (`A ∈ [0..15]`, `B ∈ [0..15]`, `Cin ∈ {0, 1}`) aprovadas.
+- Exhaustive verification performed by the example: **`512 / 512`** combinations (`A ∈ [0..15]`, `B ∈ [0..15]`, `Cin ∈ {0, 1}`) passed.
 
 ---
 
-## 3. Projeto Completo: ALU 4-bit `74LS382 / 74HC382`
+## 3. Complete Design: 4-bit ALU (`74LS382 / 74HC382`)
 
-Código completo em [`examples/alu_4bit_74ls382.py`](../examples/alu_4bit_74ls382.py).
+Full source in [`examples/alu_4bit_74ls382.py`](../examples/alu_4bit_74ls382.py).
 
-A ALU implementa integralmente a tabela de funções do CI `74LS382 / 74HC382` usando **apenas 1 somador de 4 bits (`74HC283`)**, inversores controlados por `XOR` nas entradas (`Inv_A` / `Inv_B`), detector de *overflow* de 3 portas (`OVR = (X3 ⊙ Y3) · (X3 ⊕ S3)`) e 4 seletores de saída (`BitMux`):
+This ALU implements the complete `74LS382 / 74HC382` function table using **one 4-bit adder (`74HC283`)**, programmable `XOR` input inverters (`Inv_A` / `Inv_B`), a 3-gate signed overflow detector (`OVR = (X3 ⊙ Y3) · (X3 ⊕ S3)`), and four 1-bit output selectors (`BitMux`):
 
-| `S2` | `S1` | `S0` | Operação | Saída `F3..F0` |
+| `S2` | `S1` | `S0` | Operation | Output `F3..F0` |
 | :-: | :-: | :-: | --- | --- |
 | `0` | `0` | `0` | `CLEAR` | `0000` |
-| `0` | `0` | `1` | `B - A` | `~A + B + Cn` (com `Cn+4` e `OVR`) |
-| `0` | `1` | `0` | `A - B` | `A + ~B + Cn` (com `Cn+4` e `OVR`) |
-| `0` | `1` | `1` | `A + B` | `A + B + Cn` (com `Cn+4` e `OVR`) |
+| `0` | `0` | `1` | `B - A` | `~A + B + Cn` (with `Cn+4` and `OVR`) |
+| `0` | `1` | `0` | `A - B` | `A + ~B + Cn` (with `Cn+4` and `OVR`) |
+| `0` | `1` | `1` | `A + B` | `A + B + Cn` (with `Cn+4` and `OVR`) |
 | `1` | `0` | `0` | `A XOR B` | `A ⊕ B` |
-| `1` | `0` | `1` | `A OR B` | `A + B` (bit a bit) |
-| `1` | `1` | `0` | `A AND B` | `A · B` (bit a bit) |
+| `1` | `0` | `1` | `A OR B` | `A + B` (bitwise) |
+| `1` | `1` | `0` | `A AND B` | `A · B` (bitwise) |
 | `1` | `1` | `1` | `PRESET` | `1111` |
 
-### Subcircuito interno `BitMux` (seletor de 1 bit)
+### Internal Subcircuit `BitMux` (1-bit Output Selector)
 
 ![BitMux 1-bit ALU Selector](images/bit_mux.png)
 
-### Circuito completo `ALU_74LS382` (39 símbolos, 210 fios)
+### Top-Level `ALU_74LS382` (39 symbols, 210 wires)
 
 ![4-bit ALU 74LS382 / 74HC382](images/alu_74ls382.png)
 
-- Verificação exaustiva executada pelo exemplo: **`4096 / 4096`** combinações (`8 operações × 2 carries × 16 valores de A × 16 valores de B`) aprovadas para `F3..F0`, `Cn+4` e `OVR`.
+- Exhaustive verification performed by the example: **`4096 / 4096`** combinations (`8 ops × 2 carries × 16 A × 16 B`) passed for `F3..F0`, `Cn+4`, and `OVR`.
 
 ---
 
-## 4. Circuitos Sequenciais e Detecção de Oscilação
+## 4. Sequential Circuits & Oscillation Detection
 
-O simulador FIFO da `pylogiccircuit` também suporta realimentação (*feedback*) em latches e flip-flops — mantendo o estado estável sem falsos erros de oscilação — e acusa oscilação real quando existe laço instável (como um *ring oscillator*).
+`pylogiccircuit`'s FIFO simulator supports feedback loops in latches and flip-flops — converging cleanly without false oscillation errors — while accurately flagging true unstable loops (such as ring oscillators).
 
-### Latch SR ativo-baixo (2 portas `NAND2` cruzadas)
+### Active-Low SR Latch (Cross-Coupled `NAND2` Gates)
 
 ![Active-Low SR Latch](images/sr_latch.png)
 
-Tabela-verdade obtida via `Simulator.truth_table("SRLatch")`:
+Truth table produced by `Simulator.truth_table("SRLatch")`:
 
-| `S_n` | `R_n` | `Q` | `Qn` | Estado |
+| `S_n` | `R_n` | `Q` | `Qn` | State |
 | :-: | :-: | :-: | :-: | --- |
-| `0` | `0` | `1` | `1` | Proibido (`S_n=R_n=0`) |
+| `0` | `0` | `1` | `1` | Forbidden (`S_n=R_n=0`) |
 | `0` | `1` | `1` | `0` | `SET` (`Q = 1`) |
 | `1` | `0` | `0` | `1` | `RESET` (`Q = 0`) |
-| `1` | `1` | `0` | `1` | `HOLD` (mantém estado anterior `0, 1`) |
+| `1` | `1` | `0` | `1` | `HOLD` (retains previous state `0, 1`) |
 
 ---
 
-## 5. Guia da Interface de Linha de Comando (CLI)
+## 5. Command-Line Interface (CLI)
 
-Ao instalar o pacote (`pip install -e .`), o comando `pylogiccircuit` fica disponível no terminal (também acessível via `python -m pylogiccircuit.cli`).
+Installing the package exposes the `pylogiccircuit` executable (also runnable via `python -m pylogiccircuit.cli`).
 
-### `list` — Listar circuitos do projeto
+### `list` — List circuits in a `.CircuitProject`
 ```bash
 pylogiccircuit list alu_74ls382.CircuitProject
 ```
-Saída esperada:
+Output:
 ```text
 FullAdder (FA) — inputs=3, outputs=2, symbols=10, wires=34
 Adder4 (74HC283) — inputs=9, outputs=5, symbols=18, wires=45
@@ -136,21 +136,21 @@ BitMux (MUX) — inputs=6, outputs=1, symbols=20, wires=104
 ALU_74LS382 (74LS382) — inputs=12, outputs=6, symbols=39, wires=210
 ```
 
-### `verify` — Validar geometria de fios
+### `verify` — Audit wire geometry
 ```bash
 pylogiccircuit verify alu_74ls382.CircuitProject
-# Se um arquivo antigo desenhado à mão contiver fios diagonais:
-pylogiccircuit verify meu_arquivo.CircuitProject --allow-diagonal
+# For legacy hand-drawn files containing diagonal wires:
+pylogiccircuit verify my_file.CircuitProject --allow-diagonal
 ```
 
-### `truth-table` — Gerar tabela-verdade em Markdown
+### `truth-table` — Print a Markdown truth table
 ```bash
 pylogiccircuit truth-table alu_74ls382.CircuitProject --circuit FullAdder
-# Opcionalmente limite o número de linhas para circuitos grandes:
+# Optionally cap output rows for large circuits:
 pylogiccircuit truth-table alu_74ls382.CircuitProject --circuit ALU_74LS382 --max-rows 16
 ```
 
-### `render` — Gerar imagem PNG de qualquer circuito
+### `render` — Export a PNG schematic preview
 ```bash
 pylogiccircuit render alu_74ls382.CircuitProject --circuit ALU_74LS382 -o alu_preview.png --scale 14
 ```
