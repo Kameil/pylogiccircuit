@@ -43,6 +43,7 @@
 | [**Technical Architecture**](docs/ARCHITECTURE.md) | End-to-end pipeline, built-in gate GUID encoding, subcircuit geometry, orthogonal A\* router, connectivity verifier, and FIFO simulator |
 | [**API Reference**](docs/API_REFERENCE.md) | Complete documentation of every public class, method, parameter, return type, and practical recipes |
 | [**Guide, Visual Gallery & CLI**](docs/GUIDE_AND_EXAMPLES.md) | Walkthroughs with all 6 generated `preview` PNGs (`HalfAdder`, `FullAdder`, `Adder4Bit`, `BitMux`, `ALU_74LS382`, `SRLatch`) and CLI usage |
+| [**Live Preview in Zed**](docs/ZED_LIVE_PREVIEW.md) | Side-by-side live schematic preview inside Zed (`.zed/tasks.json` + `pylogiccircuit watch`) and optional local web viewer |
 
 ---
 
@@ -117,6 +118,7 @@ pylogiccircuit list my_project.CircuitProject
 pylogiccircuit verify my_project.CircuitProject
 pylogiccircuit truth-table my_project.CircuitProject --circuit HalfAdder
 pylogiccircuit render my_project.CircuitProject --circuit HalfAdder -o preview.png --scale 18
+pylogiccircuit watch examples/half_adder.py -o .pylogiccircuit_preview.png --md .pylogiccircuit_preview.md
 ```
 
 ---

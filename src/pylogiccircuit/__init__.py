@@ -15,6 +15,7 @@ from .project import (
 from .router import BoxObstacle, OrthogonalRouter, RoutingError, auto_route_nets
 from .simulator import Simulator, TruthTableResult
 from .verifier import VerificationResult, build_wire_graph, verify_connectivity
+from .watch import RenderSnapshot, load_project_from_source, render_once, watch_file
 
 __version__ = "0.1.0"
 
@@ -29,6 +30,7 @@ __all__ = [
     "PinDef",
     "PinHandle",
     "Project",
+    "RenderSnapshot",
     "RoutingError",
     "SCHEMA_NS",
     "Simulator",
@@ -40,7 +42,10 @@ __all__ = [
     "auto_route_nets",
     "build_wire_graph",
     "compute_subcircuit_layout",
+    "load_project_from_source",
     "parse_gate_guid",
     "render_circuit_png",
+    "render_once",
     "verify_connectivity",
+    "watch_file",
 ]

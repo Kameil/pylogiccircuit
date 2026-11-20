@@ -9,12 +9,13 @@ from typing import List, Optional
 from .preview import render_circuit_png
 from .project import Project
 from .simulator import Simulator
+from .watch import watch_file
 
 
 def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         prog="pylogiccircuit",
-        description="Inspect, verify, simulate, and render LogicCircuit (.CircuitProject) files.",
+        description="Inspect, verify, simulate, render, and live-preview LogicCircuit files.",
     )
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -38,9 +39,69 @@ def main(argv: Optional[List[str]] = None) -> int:
     p_ren.add_argument("project", help="Path to .CircuitProject file")
     p_ren.add_argument("-c", "--circuit", required=True, help="Circuit name or GUID")
     p_ren.add_argument("-o", "--output", required=True, help="Output PNG path")
-    p_ren.add_argument("--scale", type=int, default=12, help="Pixels per grid cell (default: 12)")
+    p_ren.add_argument("--scale", type=int, default=16, help="Pixels per grid cell (default: 16)")
+
+    # watch (live preview for Zed / editors / browser)
+    p_watch = sub.add_parser(
+        "watch",
+        help="Watch a .py script or .CircuitProject file and live-update PNG/Markdown previews on save.",
+    )
+    p_watch.add_argument("source", help="Path to a .py script or .CircuitProject file")
+    p_watch.add_argument(
+        "-o",
+        "--output",
+        default=".pylogiccircuit_preview.png",
+        help="Output PNG preview path (default: .pylogiccircuit_preview.png)",
+    )
+    p_watch.add_argument(
+        "--md",
+        "--markdown",
+        dest="markdown",
+        default=None,
+        help="Optional Markdown report path (image + verification + truth table) for Zed Markdown Preview",
+    )
+    p_watch.add_argument(
+        "-c",
+        "--circuit",
+        default=None,
+        help="Circuit name or GUID to render (defaults to the project's main circuit)",
+    )
+    p_watch.add_argument("--scale", type=int, default=16, help="Pixels per grid cell (default: 16)")
+    p_watch.add_argument(
+        "--interval",
+        type=float,
+        default=0.25,
+        help="File poll interval in seconds (default: 0.25)",
+    )
+    p_watch.add_argument(
+        "--serve",
+        nargs="?",
+        const=8765,
+        type=int,
+        default=None,
+        metavar="PORT",
+        help="Also start a local live-reloading web viewer (default port: 8765)",
+    )
+    p_watch.add_argument(
+        "--once",
+        action="store_true",
+        help="Render once and exit (useful for testing or one-shot tasks)",
+    )
 
     args = parser.parse_args(argv)
+
+    if args.command == "watch":
+        return watch_file(
+            args.source,
+            args.output,
+            circuit_name=args.circuit,
+            md_path=args.markdown,
+            scale=args.scale,
+            interval=args.interval,
+            serve_port=args.serve,
+            once=args.once,
+        )
+
     proj = Project.load(args.project)
 
     if args.command == "list":

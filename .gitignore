@@ -9,4 +9,5 @@ build/
 venv/
 *.CircuitProject
 *.png
+.pylogiccircuit_preview.*
 !docs/images/*.png

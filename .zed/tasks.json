@@ -1,0 +1,60 @@
+[
+  {
+    "label": "pylogiccircuit: Live Preview (PNG in Zed split)",
+    "command": "python3",
+    "args": [
+      "-m",
+      "pylogiccircuit.cli",
+      "watch",
+      "$ZED_FILE",
+      "-o",
+      ".pylogiccircuit_preview.png"
+    ],
+    "env": {
+      "PYTHONPATH": "$ZED_WORKTREE_ROOT/src"
+    },
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "pylogiccircuit: Live Preview (PNG + Markdown Truth Table)",
+    "command": "python3",
+    "args": [
+      "-m",
+      "pylogiccircuit.cli",
+      "watch",
+      "$ZED_FILE",
+      "-o",
+      ".pylogiccircuit_preview.png",
+      "--md",
+      ".pylogiccircuit_preview.md"
+    ],
+    "env": {
+      "PYTHONPATH": "$ZED_WORKTREE_ROOT/src"
+    },
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "pylogiccircuit: Live Preview (Browser http://127.0.0.1:8765)",
+    "command": "python3",
+    "args": [
+      "-m",
+      "pylogiccircuit.cli",
+      "watch",
+      "$ZED_FILE",
+      "-o",
+      ".pylogiccircuit_preview.png",
+      "--serve",
+      "8765"
+    ],
+    "env": {
+      "PYTHONPATH": "$ZED_WORKTREE_ROOT/src"
+    },
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  }
+]

@@ -288,5 +288,5 @@ def render_circuit_png(
 
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
-    img.save(out)
+    img.save(out, format="PNG")
     return out
