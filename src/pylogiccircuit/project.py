@@ -85,7 +85,14 @@ class GateHandle:
         self.spec = spec
         self.symbol = symbol
         self.in_ = inputs
-        self.out = output
+        self._out = output
+
+    @property
+    def out(self) -> PinHandle:
+        """Output pin handle of this gate (raises ``AttributeError`` for sinks like ``LED``)."""
+        if self._out is None:
+            raise AttributeError(f"Component {self.spec.kind!r} has no output pin.")
+        return self._out
 
     @property
     def inputs(self) -> List[PinHandle]:
@@ -454,6 +461,10 @@ class Project:
         if self.main_circuit_id is None or set_main:
             self.main_circuit_id = c.circuit_id
         return c
+
+    def add_component(self, component_cls: type, *, set_main: bool = False) -> Circuit:
+        """Compile a :class:`~pylogiccircuit.component.Component` subclass into this project."""
+        return component_cls.compile_into(self, set_main=set_main)
 
     def get_circuit(self, name_or_id: str) -> Circuit:
         """Look up a circuit by name or GUID."""

@@ -21,6 +21,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
+from .component import Component
 from .preview import _load_font, render_circuit_png
 from .project import Circuit, Project
 from .simulator import Simulator
@@ -107,10 +108,23 @@ def _extract_project_from_namespace(ns: Dict[str, Any], source_file: str) -> Opt
     if circuits:
         return circuits[-1].project
 
+    # Look for Component subclasses defined in this script
+    resolved_src = str(Path(source_file).resolve())
+    component_classes = []
+    for obj in ns.values():
+        if (
+            inspect.isclass(obj)
+            and issubclass(obj, Component)
+            and obj is not Component
+            and getattr(obj, "__module__", None) in ("__pylogiccircuit_watch__", "__main__")
+        ):
+            component_classes.append(obj)
+    if component_classes:
+        return component_classes[-1].to_project()
+
     # Look for zero-arg builder functions defined in this script
     preferred: List[Callable[[], Any]] = []
     fallback: List[Callable[[], Any]] = []
-    resolved_src = str(Path(source_file).resolve())
 
     for name, obj in ns.items():
         if name.startswith("_") or not callable(obj) or inspect.isclass(obj):

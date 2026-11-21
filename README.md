@@ -49,7 +49,8 @@
 
 ## Key Features
 
-- **Fluent Python Circuit Builder**: Create `Project` and `Circuit` sheets with inputs, outputs, built-in LogicCircuit gates (`NOT`, `AND`, `NAND`, `OR`, `NOR`, `XOR`, `XNOR`, `CLOCK`, `LED`), and reusable hierarchical subcircuits.
+- **Fluent & Class-Based Builders**: Build quick sheets imperatively with `Project`/`Circuit`, or author reusable typed chips with `Component`, `Input`, `Output`, and `self.use(...)` (full IDE pin autocomplete + automatic subcircuit deduplication).
+- **Standard Library (`pylogiccircuit.stdlib`)**: 12 ready-to-use, tested blocks — `HalfAdder`, `FullAdder`, `Adder4Bit`, `Mux2to1`, `Mux4to1`, `Decoder2to4`, `SRLatch`, `SRFlipFlop`, `DFlipFlop`, `DFlipFlopAsync` (with `~PRE`/`~CLR`), `JKFlipFlop`, and `TFlipFlop`.
 - **Orthogonal A\* Auto-Router**: Routes nets on LogicCircuit's grid while respecting exact crossing and T-junction semantics (non-connecting perpendicular crossings, protected pin stubs, escape guards, and rip-up-and-reroute).
 - **Exact Connectivity Verifier**: Detects unintended short circuits, disconnected nets, accidentally touched pins, and diagonal wires before you even open LogicCircuit.
 - **LogicCircuit-Compatible FIFO Simulator**: Flattens nested subcircuits, handles inverted pins, runs full truth-table sweeps, and detects real oscillations.
